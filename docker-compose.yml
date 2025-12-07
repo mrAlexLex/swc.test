@@ -1,0 +1,82 @@
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    volumes:
+      - ./:/var/www/
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    ports:
+      - "8080:80"
+    container_name: task_test_nginx
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - task_test_net
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - ./:/var/www/
+    container_name: task_test_app
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    networks:
+      - task_test_net
+
+  db:
+    image: postgres:17.5
+    container_name: task_test_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: task_test_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 174471
+    volumes:
+      - task_test_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - task_test_net
+
+  redis:
+    image: redis:7.2-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: task_test_redis
+    restart: unless-stopped
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - task_test_net
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: task_test_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - task_test_net
+
+networks:
+  task_test_net:
+    name: task_test_net
+
+volumes:
+  task_test_db_data:
