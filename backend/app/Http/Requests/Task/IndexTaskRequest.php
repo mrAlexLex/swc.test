@@ -39,29 +39,29 @@ class IndexTaskRequest extends FormRequest
         ];
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): ?string
     {
-        return $this->integer('status');
+        return $this->input('status');
     }
 
     public function getUserId(): ?int
     {
-        return $this->integer('user_id');
+        return $this->input('user_id');
     }
 
     public function getCompletionDate(): ?string
     {
-        return $this->integer('completion_date');
+        return $this->input('completion_date');
     }
 
     public function getCompletionDateFrom(): ?string
     {
-        return $this->integer('completion_date_from');
+        return $this->input('completion_date_from');
     }
 
     public function getCompletionDateTo(): ?string
     {
-        return $this->integer('completion_date_to');
+        return $this->input('completion_date_to');
     }
 }
 

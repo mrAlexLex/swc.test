@@ -46,7 +46,7 @@ class StoreTaskRequest extends FormRequest
     public function getData(): array
     {
         return $this->merge([
-            'status' => $this->input('status', TaskStatus::PLANNED->value),
+            'status' => $this->input('status') ?? TaskStatus::PLANNED->value,
         ])->only([
             'title',
             'description',

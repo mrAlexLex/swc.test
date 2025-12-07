@@ -34,21 +34,21 @@ class TaskFactory extends Factory
     public function planned(): static
     {
         return $this->state(fn(array $attributes): array => [
-            'status' => TaskStatus::PLANNED,
+            'status' => TaskStatus::PLANNED->value,
         ]);
     }
 
     public function inProgress(): static
     {
         return $this->state(fn(array $attributes): array => [
-            'status' => TaskStatus::IN_PROGRESS,
+            'status' => TaskStatus::IN_PROGRESS->value,
         ]);
     }
 
     public function done(): static
     {
         return $this->state(fn(array $attributes): array => [
-            'status' => TaskStatus::DONE,
+            'status' => TaskStatus::DONE->value,
             'completion_date' => fake()->dateTimeBetween('-30 days', 'now'),
         ]);
     }
