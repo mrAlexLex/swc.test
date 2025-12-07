@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     #[OA\Post(
-        path: '/api/register',
+        path: '/api/auth/register',
         summary: 'Register a new user',
         requestBody: new OA\RequestBody(
             required: true,
@@ -58,7 +58,7 @@ class AuthController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/login',
+        path: '/api/auth/login',
         summary: 'Authenticate user and get token',
         requestBody: new OA\RequestBody(
             required: true,
@@ -100,7 +100,7 @@ class AuthController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/logout',
+        path: '/api/auth/logout',
         summary: 'Logout user and revoke token',
         security: [['sanctum' => []]],
         tags: ['Auth'],

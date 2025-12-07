@@ -16,13 +16,13 @@
         }
     ],
     "paths": {
-        "/api/register": {
+        "/api/auth/register": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Register a new user",
-                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
+                "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -88,13 +88,13 @@
                 }
             }
         },
-        "/api/login": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Authenticate user and get token",
-                "operationId": "222b2625838e3c57e017987f73598fda",
+                "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -150,13 +150,13 @@
                 }
             }
         },
-        "/api/logout": {
+        "/api/auth/logout": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Logout user and revoke token",
-                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "operationId": "df9bdc6c7a6d9f20b983526b2ec0f698",
                 "responses": {
                     "200": {
                         "description": "Logged out successfully",
@@ -189,13 +189,13 @@
                 ]
             }
         },
-        "/api/tasks": {
+        "/api/auth/tasks": {
             "get": {
                 "tags": [
                     "Tasks"
                 ],
                 "summary": "Get list of tasks",
-                "operationId": "be68905d866e856db6c738172b8d929a",
+                "operationId": "837bc9a309baa4705ecd5f831abb8676",
                 "parameters": [
                     {
                         "name": "status",
@@ -346,7 +346,7 @@
                     "Tasks"
                 ],
                 "summary": "Create a new task",
-                "operationId": "ebbaabc58e3db61374a57c53544959b2",
+                "operationId": "92e3d79b9322aebba326bedbc3279e9c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -376,10 +376,13 @@
                                         ],
                                         "example": "planned"
                                     },
-                                    "attachment": {
-                                        "description": "Max 5MB. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp",
-                                        "type": "string",
-                                        "format": "binary"
+                                    "attachments": {
+                                        "description": "Max 5MB each. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -417,13 +420,13 @@
                 ]
             }
         },
-        "/api/tasks/{id}": {
+        "/api/auth/tasks/{id}": {
             "get": {
                 "tags": [
                     "Tasks"
                 ],
                 "summary": "Get a specific task",
-                "operationId": "32c40e2d1129b80c1dcabd538df63a33",
+                "operationId": "9671265d4ac6d9f0bd6a2fd53ec6c8ca",
                 "parameters": [
                     {
                         "name": "id",
@@ -468,7 +471,7 @@
                     "Tasks"
                 ],
                 "summary": "Update a task (use POST with _method=PUT for file upload)",
-                "operationId": "c596fc126513834fcdb18d96cc5fb663",
+                "operationId": "9290286003adb29da4a4b6b733f65aa8",
                 "parameters": [
                     {
                         "name": "id",
@@ -511,14 +514,20 @@
                                         "type": "string",
                                         "format": "date"
                                     },
-                                    "attachment": {
-                                        "description": "Max 5MB. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp",
-                                        "type": "string",
-                                        "format": "binary"
+                                    "attachments": {
+                                        "description": "Max 5MB each. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
                                     },
-                                    "remove_attachment_id": {
-                                        "description": "Media ID to remove",
-                                        "type": "integer"
+                                    "remove_attachment_ids": {
+                                        "description": "Array of Media IDs to remove",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -563,7 +572,7 @@
                     "Tasks"
                 ],
                 "summary": "Delete a task",
-                "operationId": "d81cc7975ea62176b4ef8f74ed95168d",
+                "operationId": "31d6f98c3896aa8f35c2d6e97cf0e865",
                 "parameters": [
                     {
                         "name": "id",
@@ -612,6 +621,34 @@
     },
     "components": {
         "schemas": {
+            "Attachment": {
+                "title": "Attachment",
+                "description": "File attachment resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "http://localhost:8080/storage/media/1/document.pdf"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "document.pdf"
+                    },
+                    "mime_type": {
+                        "type": "string",
+                        "example": "application/pdf"
+                    },
+                    "size": {
+                        "description": "File size in bytes",
+                        "type": "integer",
+                        "example": 102400
+                    }
+                },
+                "type": "object"
+            },
             "Task": {
                 "title": "Task",
                 "description": "Task resource",
@@ -654,19 +691,11 @@
                     "user": {
                         "$ref": "#/components/schemas/User"
                     },
-                    "attachment": {
-                        "properties": {
-                            "url": {
-                                "type": "string",
-                                "example": "http://localhost:8080/storage/media/1/document.pdf"
-                            },
-                            "name": {
-                                "type": "string",
-                                "example": "document.pdf"
-                            }
-                        },
-                        "type": "object",
-                        "nullable": true
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Attachment"
+                        }
                     },
                     "created_at": {
                         "type": "string",

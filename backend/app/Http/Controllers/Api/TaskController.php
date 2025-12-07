@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
 class TaskController extends Controller
 {
     #[OA\Get(
-        path: '/api/tasks',
+        path: '/api/auth/tasks',
         summary: 'Get list of tasks',
         security: [['sanctum' => []]],
         tags: ['Tasks'],
@@ -84,7 +84,7 @@ class TaskController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/tasks',
+        path: '/api/auth/tasks',
         summary: 'Create a new task',
         security: [['sanctum' => []]],
         requestBody: new OA\RequestBody(
@@ -141,7 +141,7 @@ class TaskController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/tasks/{id}',
+        path: '/api/auth/tasks/{id}',
         summary: 'Get a specific task',
         security: [['sanctum' => []]],
         tags: ['Tasks'],
@@ -170,7 +170,7 @@ class TaskController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/tasks/{id}',
+        path: '/api/auth/tasks/{id}',
         summary: 'Update a task (use POST with _method=PUT for file upload)',
         security: [['sanctum' => []]],
         requestBody: new OA\RequestBody(
@@ -241,7 +241,7 @@ class TaskController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/tasks/{id}',
+        path: '/api/auth/tasks/{id}',
         summary: 'Delete a task',
         security: [['sanctum' => []]],
         tags: ['Tasks'],

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Task;
 
 use App\Enums\TaskStatus;
 use App\Models\Task\Task;
