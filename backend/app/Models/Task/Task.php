@@ -32,6 +32,7 @@ class Task extends Model implements HasMedia
     {
         return [
             'status' => TaskStatus::class,
+            'completion_date' => 'date',
         ];
     }
 
@@ -47,7 +48,6 @@ class Task extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection(self::ATTACHMENT_COLLECTION)
-            ->singleFile()
             ->acceptsMimeTypes([
                 'application/pdf',
                 'application/msword',

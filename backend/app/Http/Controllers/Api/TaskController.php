@@ -98,7 +98,12 @@ class TaskController extends Controller
                             new OA\Property(property: 'title', type: 'string', maxLength: 255, example: 'Complete project documentation'),
                             new OA\Property(property: 'description', type: 'string', maxLength: 10000, example: 'Write comprehensive documentation for the API'),
                             new OA\Property(property: 'status', type: 'string', enum: ['planned', 'in_progress', 'done'], example: 'planned'),
-                            new OA\Property(property: 'attachment', type: 'string', format: 'binary', description: 'Max 5MB. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp'),
+                            new OA\Property(
+                                property: 'attachments',
+                                type: 'array',
+                                items: new OA\Items(type: 'string', format: 'binary'),
+                                description: 'Max 5MB each. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp'
+                            ),
                         ]
                     )
                 ),
@@ -128,7 +133,7 @@ class TaskController extends Controller
         $task = $user->tasks()
             ->create($request->getData());
 
-        $task->saveAttachments();
+        $task->saveAttachments($request->getAttachments());
 
         DB::commit();
 
@@ -180,8 +185,18 @@ class TaskController extends Controller
                             new OA\Property(property: 'description', type: 'string', maxLength: 10000, example: 'Updated task description'),
                             new OA\Property(property: 'status', type: 'string', enum: ['planned', 'in_progress', 'done']),
                             new OA\Property(property: 'completion_date', type: 'string', format: 'date'),
-                            new OA\Property(property: 'attachment', type: 'string', format: 'binary', description: 'Max 5MB. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp'),
-                            new OA\Property(property: 'remove_attachment_id', type: 'integer', description: 'Media ID to remove'),
+                            new OA\Property(
+                                property: 'attachments',
+                                type: 'array',
+                                items: new OA\Items(type: 'string', format: 'binary'),
+                                description: 'Max 5MB each. Allowed: pdf, doc, docx, xls, xlsx, txt, csv, jpeg, jpg, png, gif, webp'
+                            ),
+                            new OA\Property(
+                                property: 'remove_attachment_ids',
+                                type: 'array',
+                                items: new OA\Items(type: 'integer'),
+                                description: 'Array of Media IDs to remove'
+                            ),
                         ]
                     )
                 ),
@@ -212,14 +227,11 @@ class TaskController extends Controller
 
         $task->update($request->getData());
 
-        if ($request->has('remove_attachment_id')) {
-            $task->media()->where('id', $request->getRemoveAttachment())->delete();
+        if ($request->has('remove_attachment_ids')) {
+            $task->media()->whereIn('id', $request->getRemoveAttachmentIds())->delete();
         }
 
-        if ($request->hasFile('attachment')) {
-            $task->clearMediaCollection(Task::ATTACHMENT_COLLECTION);
-            $task->addMediaFromRequest('attachment')->toMediaCollection(Task::ATTACHMENT_COLLECTION);
-        }
+        $task->saveAttachments($request->getAttachments());
 
         DB::commit();
 

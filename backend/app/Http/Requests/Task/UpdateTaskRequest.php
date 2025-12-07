@@ -35,14 +35,20 @@ class UpdateTaskRequest extends FormRequest
                 'nullable',
                 'date'
             ],
-            'attachment' => [
+            'attachments' => [
                 'nullable',
+                'array',
+            ],
+            'attachments.*' => [
                 'file',
                 'max:5120', // 5MB
                 new FileExtensionRule(['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv', 'jpeg', 'jpg', 'png', 'gif', 'webp'])
             ],
-            'remove_attachment_id' => [
+            'remove_attachment_ids' => [
                 'nullable',
+                'array',
+            ],
+            'remove_attachment_ids.*' => [
                 'integer',
                 Rule::exists('media', 'id'),
             ],
@@ -51,7 +57,9 @@ class UpdateTaskRequest extends FormRequest
 
     public function getData(): array
     {
-        return $this->only([
+        return $this->merge([
+            'completion_date' => now()->parse($this->input('completion_date')),
+        ])->only([
             'title',
             'description',
             'status',
@@ -59,14 +67,14 @@ class UpdateTaskRequest extends FormRequest
         ]);
     }
 
-    public function getAttachment(): ?string
+    public function getAttachments(): array
     {
-        return $this->input('attachment');
+        return $this->file('attachments', []);
     }
 
-    public function getRemoveAttachment(): ?int
+    public function getRemoveAttachmentIds(): array
     {
-        return $this->input('remove_attachment_id');
+        return $this->input('remove_attachment_ids', []);
     }
 }
 

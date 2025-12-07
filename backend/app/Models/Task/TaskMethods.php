@@ -4,22 +4,19 @@ namespace App\Models\Task;
 
 trait TaskMethods
 {
-    public function saveAttachments()
+    public function saveAttachments(array $attachments): void
     {
-        $this->addMediaFromRequest('attachment')->toMediaCollection(Task::ATTACHMENT_COLLECTION);
+        foreach ($attachments as $file) {
+            $this->addMedia($file)->toMediaCollection(Task::ATTACHMENT_COLLECTION);
+        }
     }
 
-    public function getAttachmentUrlAttribute(): ?string
+    public function getAttachmentsAttribute(): array
     {
-        $media = $this->getFirstMedia(self::ATTACHMENT_COLLECTION);
-
-        return $media?->getUrl();
-    }
-
-    public function getAttachmentNameAttribute(): ?string
-    {
-        $media = $this->getFirstMedia(self::ATTACHMENT_COLLECTION);
-
-        return $media?->file_name;
+        return $this->getMedia(self::ATTACHMENT_COLLECTION)->map(fn($media) => [
+            'id' => $media->id,
+            'url' => $media->getUrl(),
+            'name' => $media->file_name,
+        ])->toArray();
     }
 }

@@ -31,8 +31,11 @@ class StoreTaskRequest extends FormRequest
                 'nullable',
                 Rule::enum(TaskStatus::class)
             ],
-            'attachment' => [
+            'attachments' => [
                 'nullable',
+                'array',
+            ],
+            'attachments.*' => [
                 'file',
                 'max:5120', // 5MB
                 new FileExtensionRule(['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv', 'jpeg', 'jpg', 'png', 'gif', 'webp']),
@@ -51,9 +54,9 @@ class StoreTaskRequest extends FormRequest
         ]);
     }
 
-    public function getAttachment(): array
+    public function getAttachments(): array
     {
-        return $this->input('attachment');
+        return $this->file('attachments', []);
     }
 }
 
